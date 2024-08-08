@@ -34,11 +34,12 @@ if(PRODUCTION_BUILD)
 
   # https://thomas.trocha.com/blog/cmake--copy-files-after-build/
   # https://stackoverflow.com/questions/13429656/how-to-copy-contents-of-a-directory-into-build-directory-after-make-with-cmake
+  # https://stackoverflow.com/questions/13429656/how-to-copy-contents-of-a-directory-into-build-directory-after-make-with-cmake#:~:text=To%20copy%20the%20directory%20itself%20instead%20of%20the,%24%7BPROJECT_NAME%7D%20POST_BUILD%20COMMAND%20%24%7BCMAKE_COMMAND%7D%20-E%20copy_directory%20%24%7BCMAKE_SOURCE_DIR%7D%2Fconfig%20%24%3CTARGET_FILE_DIR%3A%24%7BPROJECT_NAME%7D%3E%2Fconfig%29
   add_custom_command(
     TARGET ${PROJECT_NAME}
     POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/resources
-            ${CMAKE_BINARY_DIR}/resources)
+            $<TARGET_FILE_DIR:${PROJECT_NAME}>/resources)
 else()
   # This is useful to get an ASSETS_PATH in your IDE during development
   target_compile_definitions(

@@ -1,12 +1,14 @@
-# Basic setup
+# Target MacOS basic setup
 
-NOTE: This setup is tested on MacOS only. For Windows, read further below.
+**NOTE**: For targeting Windows (using your MacOS machine), read further below.
 
-## Tutorial
+## Tutorial link
+
+Assuming you are on a MacOS machine, you can follow the official tutorial for bash here:
 
 https://learn.microsoft.com/en-us/vcpkg/get_started/get-started?pivots=shell-bash
 
-## Install vcpkg
+### 1. Install vcpkg
 
 Install vcpkg with `brew install vcpkg`
 
@@ -17,110 +19,171 @@ git clone https://github.com/microsoft/vcpkg "$HOME/vcpkg"
 export VCPKG_ROOT="$HOME/vcpkg"
 ```
 
-## Init a new project
+### 2. Init a new project
 
 `vcpkg new --application`
 
-## Add fmt dependency
+### 3. Add fmt dependency
 
 `vcpkg add port fmt`
 
-## Create CMakeLists.txt and CMakePresets.json
+### 4. Create CMakeLists.txt and CMakePresets.json
 
-See example files in this folder
+See/Clone example files in this folder
 
-## Configure build
+### 5. Configure build
 
-`cmake --preset=default -DCMAKE_EXPORT_COMPILE_COMMANDS=1`
+`cmake --preset=default`
 
-## Build
+### 6. Build
 
 `cmake --build build`
 
-## Neovim
+## Neovim (optional)
+
+I use clangd installed from Mason as the LSP for C++
+
+**NOTE**: clangd will look for a file called `compile_commands.json` for LSP suggestions to work correctly with packages installed with `vcpkg`
+
+**LINKS**:
 
 - https://gist.github.com/sivteck/a3030d07ba4676a88d25ab5d86459a5c
 - https://stackoverflow.com/questions/59263015/cmake-how-to-change-compile-commands-json-output-location
 
-## Resources
+## Extra resources (optional)
 
-- https://cmake.org/cmake/help/book/mastering-cmake/chapter/Writing%21CMakeLists%20Files.html
 - https://cmake.org/cmake/help/latest/manual/cmake-variables.7.html
 - https://cmake.org/cmake/help/latest/manual/cmake-presets.7.html
-
----
-
 - https://www.ics.com/blog/find-and-link-libraries-cmake#:~:text=The%20main%20thing%20we%20will%20use%20here%20is,you%E2%80%99re%20looking%20for%20is%20already%20built%20and%20installed.
 
-# Cross compiling for Windows
+# Target Windows (using your MacOS machine)
 
-NOTE: Trying to cross compile on Windows but not successful.
+Yes, you can actually build a C++ project targeting Windows using CMake, vcpkg, and your MacOS machine ONLY!
 
-- https://cmake.org/cmake/help/book/mastering-cmake/chapter/Cross%20Compiling%20With%20CMake.html
-- https://www.reddit.com/r/cmake/comments/1biuopg/crosscompile_from_linux_to_windows/
-  - https://gist.github.com/peterspackman/8cf73f7f12ba270aa8192d6911972fe8
+But, of course, it's not as simple as it seems.
 
-## Install mingw-w64 toolchain
+If you're interested, you can take a look at my windows_activity_log markdown file in this folder.
 
-`brew install mingw-w64`
+Here in the main markdown, I'll just go straight to the process that works for me.
 
-- Carefully check where mingw-w64 is installed
-- `/usr/local/Cellar/mingw-w64/12.0.0`
+## Is this process the best way to go?
 
-## Create toolchain cmake file
+I have no idea. But it's a good and strong start as you cannot go wrong using an actual Windows VM instance and a Docker container.
 
-- `mkdir ~/cmake-cross-compile-toolchains`
-- `cd ~/cmake-cross-compile-toolchains`
-- Create `mingw-w64-x86_64.cmake` like in https://gist.github.com/peterspackman/8cf73f7f12ba270aa8192d6911972fe8
+You can always buy or setup a real Windows machine, but I don't have one, so that might be the reason I spent time setting up all this.
 
-## Check the triplet file for vcpkg
+But I hope that even if you don't feel the need to target Windows using your MacOS machine, you can still learn something from this process and maybe apply it for another build pipeline that you're doing.
 
-https://stackoverflow.com/questions/58777810/how-to-integrate-vcpkg-in-linux-with-cross-build-toolchain-as-well-as-sysroot
+## Overview
 
-https://learn.microsoft.com/en-us/vcpkg/users/examples/overlay-triplets-linux-dynamic
+This simple example project will compile a simple program that uses `fmt` C++ package from vcpkg.
 
-https://devblogs.microsoft.com/cppblog/vcpkg-host-dependencies/
+Then, we compile the project using CMake, but the executable will be compiled for Windows and can run on Windows natively.
 
-https://opencoursehub.cs.sfu.ca/bfraser/grav-cms/cmpt433/links/files/2024-student-howtos/Cross-compiling_External_C_C++LibrariesUsing_vcpkg.pdf
+1. Boot up a Windows VM on your MacOS machine
+   1. Run a docker container with Microsoft image inside the Windows VM context
+   2. Install some dependencies (which should be handled by my Dockerfile)
+2. Setup environment variables with a simple script
+3. Run the Cmake configure step
+4. Run the Cmake build step
+5. Run program
 
-https://stackoverflow.com/questions/77556548/using-custom-triplets-with-vcpkg-and-cmake-in-manifest-mode
+**NOTE**:
 
-- `cd $VCPKG_ROOT/triplets/`
-- `mkdir tudo-custom`
-- `cp x64-windows.cmake tudo-custom/x64-windows-custom.cmake`
-- Fix the content of the file a bit
-- `vcpkg install <lib_name>:<target_triplet> --overlay-triplets=$VCPKG_ROOT/triplets/tudo-custom/`
-  - `vcpkg install fmt:x64-windows-custom --overlay-triplets=$VCPKG_ROOT/triplets/tudo-custom/`
+- The docker image my Dockerfile outputs will be large (~16 GB) as it needs to install the buildtools and workload vctools from Visual Studio
+- But after that, everything should work smoothly
 
-```
-"VCPKG_OVERLAY_TRIPLETS": "$env{VCPKG_ROOT}/triplets/tudo-custom/",
-```
+## 1. Boot up a Windows VM on your MacOS machine
 
-## Configure build
+### Install Vagrant and VirtualBox
 
-`cmake --preset=windows -DCMAKE_EXPORT_COMPILE_COMMANDS=1`
+#### Main links
 
-## Build
+- https://github.com/StefanScherer/windows-docker-machine?tab=readme-ov-file
+- https://stackoverflow.com/questions/45380972/how-can-i-run-a-docker-windows-container-on-osx
+
+#### Install Vagrant
+
+`brew install --cask vagrant`
+
+#### Install VirtualBox
+
+`brew install --cask virtualbox`
+
+### Clone windows-docker-machine Github repo
+
+`git clone https://github.com/StefanScherer/windows-docker-machine <your_chosen_destination>`
+
+`cd <your_chosen_destination>`
+
+### Run Windows Server VM
+
+`vagrant up --provider virtualbox 2022-box`
+
+### Docker context
+
+Check available Docker contexts. You should see a new context "2022-box".
+
+`docker context ls`
+
+Switch to the "2022-box" context.
+
+`docker context use 2022-box`
+
+**NOTE**: You can always switch back to other context with `docker context use <context_name>`
+
+### Build Docker image
+
+Assuming you are at the root of my repo project:
+
+`cd ./scripts/windows`
+
+`docker build -t buildtools_choco:latest -m 2GB .`
+
+### Run docker container
+
+Assuming you are at the root of my repo project:
+
+`cd ./scripts/windows`
+
+`docker compose up -d`
+
+**NOTE**:
+
+- My docker compose file will bind the current repo project folder to `C:/my-project` inside the container
+
+### Execute the docker container shell
+
+`docker exec -it windows_container powershell`
+
+## 2. Setup environment variables with a simple script
+
+Assuming you are already inside the container shell:
+
+`cd C:\my-project`
+
+`.\scripts\windows\setup-env.ps1`
+
+## 3. Run the Cmake configure step
+
+`cmake --preset=windows_vm`
+
+## 4. Run the Cmake build step
 
 `cmake --build build`
 
-## Conclusion
+## 5. Run program
 
-I successfully run the configure step. But somehow I couldn't run the build step.
+You will notice that inside the `build` folder both on the container and on your host MacOS machine, you have a new `Debug` folder.
 
-It always output:
+This folder will contain the executable with `.exe` as the extension that you can run on Windows natively.
 
-- ld: archive member '/' not a mach-o file for libfmtd.a
+# Conclusion
 
-# Test Windows VM
+Thanks for spending the time reading this. Good luck! I hope you learn something new, because I learned a lot.
 
-https://github.com/StefanScherer/windows-docker-machine?tab=readme-ov-file
+# Questions?
 
-https://stackoverflow.com/questions/45380972/how-can-i-run-a-docker-windows-container-on-osx
+If you have any questions, feel free to contact me or open an issue on Github.
 
-- Need vagrant + virtual box:
-
-  - Vagrant is a tool for building and managing virtual machine environments in a single workflow
-  - and VirtualBox is one of the most commonly used providers for Vagrant
-
-`brew install --cask vagrant`
+**NOTE**: I'm not an expert in this, but if I know any resources, I'll let you know.

@@ -6,20 +6,17 @@
       "generator": "Ninja",
       "binaryDir": "${sourceDir}/build",
       "cacheVariables": {
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
         "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
       }
     },
     {
-      "name": "windows",
-      "generator": "Ninja",
+      "name": "windows_vm",
+      "generator": "Visual Studio 17 2022",
       "binaryDir": "${sourceDir}/build",
-      "environment": {
-        "VCPKG_BINARY_SOURCES": "clear"
-      },
       "cacheVariables": {
-        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
-        "VCPKG_OVERLAY_TRIPLETS": "$env{VCPKG_ROOT}/triplets/tudo-custom/",
-        "VCPKG_TARGET_TRIPLET": "x64-windows-custom"
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
       }
     }
   ]

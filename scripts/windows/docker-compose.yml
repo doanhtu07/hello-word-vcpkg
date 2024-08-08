@@ -1,0 +1,9 @@
+services:
+  myservice:
+    image: buildtools_choco
+    container_name: windows_container
+    tty: true
+    stdin_open: true
+    command: powershell
+    volumes:
+      - "C:/Users/admin/Desktop/Projects/learning/cpp/hello-word-vcpkg/:C:/my-project"
