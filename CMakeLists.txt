@@ -9,6 +9,8 @@ project(HelloWorld)
 
 # === Handle source files ===
 
+message(STATUS "Handle source files")
+
 # Define MY_SOURCES to be a list of all the source files for my game
 file(GLOB_RECURSE MY_SOURCES CONFIGURE_DEPENDS
      "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
@@ -19,10 +21,14 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE ${MY_SOURCES})
 
 # === Handle packages ===
 
+message(STATUS "Handle packages")
+
 find_package(fmt CONFIG REQUIRED)
 target_link_libraries(HelloWorld PRIVATE fmt::fmt)
 
 # === Handle resources folder ===
+
+message(STATUS "Handle resources folder")
 
 if(PRODUCTION_BUILD)
   # setup the ASSETS_PATH macro to be in the root folder of your exe
@@ -51,8 +57,9 @@ endif()
 
 # === Handle compile_commands.json for editor to lint ===
 
+message(STATUS "Handle compile_commands.json for editor to lint")
+
 # https://stackoverflow.com/questions/59263015/cmake-how-to-change-compile-commands-json-output-location
-message(STATUS "Symlinking compile_commands.json")
 if(PROJECT_IS_TOP_LEVEL AND UNIX)
   # Create symlink to compile_commands.json for IDE to pick it up
   execute_process(
