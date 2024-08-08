@@ -1,3 +1,15 @@
+# About
+
+This simple example project will compile a small program that uses `fmt` C++ package installed from vcpkg.
+
+Then, we use CMake to build the project.
+
+There are two build targets we will consider: MacOS and Windows.
+
+We will conduct the both build processes on a single MacOS machine.
+
+The executable of each process can then run natively on the process's target machine.
+
 # Target MacOS basic setup
 
 **NOTE**: For targeting Windows (using your MacOS machine), read further below.
@@ -75,10 +87,6 @@ You can always buy or setup a real Windows machine, but I don't have one, so tha
 But I hope that even if you don't feel the need to target Windows using your MacOS machine, you can still learn something from this process and maybe apply it for another build pipeline that you're doing.
 
 ## Overview
-
-This simple example project will compile a simple program that uses `fmt` C++ package from vcpkg.
-
-Then, we compile the project using CMake, but the executable will be compiled for Windows and can run on Windows natively.
 
 1. Boot up a Windows VM on your MacOS machine
    1. Run a docker container with Microsoft image inside the Windows VM context
