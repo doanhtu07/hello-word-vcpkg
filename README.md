@@ -186,4 +186,7 @@ Thanks for spending the time reading this. Good luck! I hope you learn something
 
 If you have any questions, feel free to contact me or open an issue on Github.
 
-**NOTE**: I'm not an expert in this, but if I know any resources, I'll let you know.
+**NOTE**:
+
+- I'm not an expert in this, but if I know any resources, I'll let you know.
+- If you want to do some Docker command stuff, ask ChatGPT or any LLMs! They helped me a lot lol...
