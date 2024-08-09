@@ -51,6 +51,12 @@ See/Clone example files in this folder
 
 `cmake --build build`
 
+### 7. Run program
+
+Look at the build folder, you should see an executable named `HelloWorld`.
+
+You can run the file directly on MacOS. It should work just fine.
+
 ## Neovim (optional)
 
 I use clangd installed from Mason as the LSP for C++
