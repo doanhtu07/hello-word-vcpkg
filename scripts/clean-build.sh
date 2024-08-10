@@ -1,1 +1,1 @@
-sudo rm -rf build compile_commands.json
+rm -rf build compile_commands.json

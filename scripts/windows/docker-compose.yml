@@ -6,4 +6,4 @@ services:
     stdin_open: true
     command: powershell
     volumes:
-      - "C:/Users/admin/Desktop/Projects/learning/cpp/hello-word-vcpkg/:C:/my-project"
+      - "C:/Users/admin/Desktop/Projects/learning/cpp/hello-world-vcpkg/:C:/my-project"
